@@ -18,6 +18,7 @@
             --text: #e8e8f0;
             --muted: #6a6a8a;
             --radius: 14px;
+            --max-w: 860px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,7 +32,6 @@
             overflow-x: hidden;
         }
 
-        /* Subtle bg pattern */
         body::before {
             content: '';
             position: fixed;
@@ -43,10 +43,7 @@
             z-index: 0;
         }
 
-        .page {
-            position: relative;
-            z-index: 1;
-        }
+        .page { position: relative; z-index: 1; }
 
         /* ============ SELECT SCREEN ============ */
 
@@ -65,13 +62,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        .fade-out { animation: fadeOut 0.3s ease forwards; }
+
         @keyframes fadeOut {
             from { opacity: 1; transform: translateY(0); }
             to { opacity: 0; transform: translateY(-8px); }
-        }
-
-        .fade-out {
-            animation: fadeOut 0.3s ease forwards;
         }
 
         #select-screen h1 {
@@ -88,7 +83,6 @@
             color: var(--muted);
             font-size: 1rem;
             margin-bottom: 2.5rem;
-            font-weight: 400;
         }
 
         .games {
@@ -103,19 +97,15 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 0;
             cursor: pointer;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
-            position: relative;
         }
 
         .game-card:hover {
             transform: translateY(-6px);
             border-color: var(--accent2);
-            box-shadow:
-                0 12px 40px rgba(252, 74, 26, 0.12),
-                0 0 0 1px rgba(247, 183, 51, 0.15);
+            box-shadow: 0 12px 40px rgba(252, 74, 26, 0.12), 0 0 0 1px rgba(247,183,51,0.15);
         }
 
         .game-card .thumb {
@@ -126,41 +116,19 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden;
         }
 
         .game-card .thumb::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(
-                180deg,
-                transparent 40%,
-                rgba(9, 9, 15, 0.85) 100%
-            );
+            background: linear-gradient(180deg, transparent 40%, rgba(9, 9, 15, 0.85) 100%);
         }
 
         .game-card .thumb .emoji {
             font-size: 4rem;
             z-index: 1;
             filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
-        }
-
-        .game-card .info {
-            padding: 1rem 1.2rem 1.1rem;
-        }
-
-        .game-card h2 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 0.25rem;
-        }
-
-        .game-card .desc {
-            font-size: 0.82rem;
-            color: var(--muted);
-            line-height: 1.4;
         }
 
         .game-card .play-tag {
@@ -180,9 +148,11 @@
             transition: opacity 0.2s;
         }
 
-        .game-card:hover .play-tag {
-            opacity: 1;
-        }
+        .game-card:hover .play-tag { opacity: 1; }
+
+        .game-card .info { padding: 1rem 1.2rem 1.1rem; }
+        .game-card h2 { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.25rem; }
+        .game-card .desc { font-size: 0.82rem; color: var(--muted); }
 
         /* ============ GAME SCREEN ============ */
 
@@ -194,10 +164,7 @@
             padding: 1rem;
         }
 
-        #game-screen.active {
-            display: flex;
-            animation: fadeIn 0.4s ease;
-        }
+        #game-screen.active { display: flex; animation: fadeIn 0.4s ease; }
 
         #game-header {
             display: flex;
@@ -224,17 +191,9 @@
             gap: 0.35rem;
         }
 
-        #back-btn:hover {
-            background: var(--surface2);
-            border-color: var(--accent2);
-        }
+        #back-btn:hover { background: var(--surface2); border-color: var(--accent2); }
 
-        #game-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: -0.01em;
-        }
+        #game-title { font-size: 1.15rem; font-weight: 700; color: #fff; }
 
         /* Player wrapper */
         .player-wrapper {
@@ -244,41 +203,46 @@
             border-radius: var(--radius);
             overflow: hidden;
             border: 1px solid var(--border);
-            box-shadow:
-                0 4px 24px rgba(0,0,0,0.4),
-                0 0 0 1px rgba(255,255,255,0.03);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03);
         }
 
-        .player-wrapper.fullscreen-mode {
-            max-width: 100%;
-            border-radius: 0;
-            border: none;
-        }
+        .player-wrapper.fullscreen-mode { max-width: 100%; border-radius: 0; border: none; }
 
-        .player-body {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 4 / 3;
-            background: #000;
-            overflow: hidden;
-        }
+        .player-body { position: relative; width: 100%; aspect-ratio: 4 / 3; background: #000; }
 
-        .player-body ruffle-player,
-        .player-body object,
-        .player-body embed {
-            width: 100% !important;
-            height: 100% !important;
-        }
+        #game-container { position: absolute; inset: 0; }
 
-        #game-container {
+        /* Loading overlay */
+        .loading {
             position: absolute;
             inset: 0;
-            display: flex;
+            display: none;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            color: var(--accent2);
+            font-size: 0.85rem;
+            gap: 0.75rem;
+            background: rgba(9, 9, 15, 0.9);
+            z-index: 10;
         }
 
-        /* Player controls bar */
+        .loading.visible { display: flex; }
+
+        .loading::before {
+            content: '';
+            display: block;
+            width: 28px;
+            height: 28px;
+            border: 2.5px solid var(--accent2);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Controls bar */
         .controls-bar {
             display: flex;
             align-items: center;
@@ -288,8 +252,7 @@
             border-top: 1px solid var(--border);
         }
 
-        .controls-left,
-        .controls-right {
+        .controls-left, .controls-right {
             display: flex;
             align-items: center;
             gap: 0.3rem;
@@ -310,14 +273,8 @@
             position: relative;
         }
 
-        .ctrl-btn:hover {
-            background: var(--surface2);
-            border-color: var(--border);
-        }
-
-        .ctrl-btn:active {
-            transform: scale(0.92);
-        }
+        .ctrl-btn:hover { background: var(--surface2); border-color: var(--border); }
+        .ctrl-btn:active { transform: scale(0.92); }
 
         .ctrl-btn svg {
             width: 18px;
@@ -345,7 +302,7 @@
             opacity: 0;
             pointer-events: none;
             transition: all 0.15s;
-            z-index: 10;
+            z-index: 20;
         }
 
         .ctrl-btn[data-tooltip]:hover::after {
@@ -353,46 +310,9 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        .separator {
-            width: 1px;
-            height: 20px;
-            background: var(--border);
-            margin: 0 0.25rem;
-        }
+        .separator { width: 1px; height: 20px; background: var(--border); margin: 0 0.25rem; }
 
-        /* Loading spinner */
-        .loading {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent2);
-            font-size: 0.85rem;
-            gap: 0.75rem;
-            position: absolute;
-            inset: 0;
-            background: rgba(9, 9, 15, 0.9);
-            z-index: 5;
-        }
-
-        .loading.visible {
-            display: flex;
-        }
-
-        .loading::before {
-            content: '';
-            display: block;
-            width: 28px;
-            height: 28px;
-            border: 2.5px solid var(--accent2);
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Toast notification */
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 1.5rem;
@@ -411,357 +331,238 @@
             pointer-events: none;
         }
 
-        .toast.visible {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        .toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        /* Fullscreen adjustments */
-        :fullscreen .player-wrapper { max-width: 100%; }
-        :fullscreen .controls-bar { border-radius: 0; }
-        :-webkit-full-screen .player-wrapper { max-width: 100%; }
-
-        /* Responsive */
         @media (max-width: 600px) {
             .games { grid-template-columns: 1fr; }
-            .controls-bar { padding: 0.4rem 0.5rem; gap: 0.2rem; }
+            .controls-bar { padding: 0.4rem 0.5rem; }
             .ctrl-btn { width: 32px; height: 32px; }
         }
     </style>
 </head>
 <body>
-    <div class="page">
+<div class="page">
 
-        <!-- ====== SELECT SCREEN ====== -->
-        <div id="select-screen">
-            <h1>Flash Games</h1>
-            <p class="subtitle">Escolha um jogo para comecar</p>
+    <!-- SELECT SCREEN -->
+    <div id="select-screen">
+        <h1>Flash Games</h1>
+        <p class="subtitle">Escolha um jogo para comecar</p>
 
-            <div class="games">
-                <div class="game-card" onclick="playGame('papaspizzeria_v2.swf', 'Papa\'s Pizzeria')">
-                    <div class="thumb">
-                        <span class="emoji">🍕</span>
-                        <span class="play-tag">Play</span>
-                    </div>
-                    <div class="info">
-                        <h2>Papa's Pizzeria</h2>
-                        <p class="desc">Faca e entregue pizzas aos clientes!</p>
-                    </div>
+        <div class="games">
+            <div class="game-card" onclick="playGame('papaspizzeria_v2.swf', 'Papa\'s Pizzeria')">
+                <div class="thumb">
+                    <span class="emoji">🍕</span>
+                    <span class="play-tag">Play</span>
                 </div>
-
-                <div class="game-card" onclick="playGame('papasburgeria.swf', 'Papa\'s Burgeria')">
-                    <div class="thumb">
-                        <span class="emoji">🍔</span>
-                        <span class="play-tag">Play</span>
-                    </div>
-                    <div class="info">
-                        <h2>Papa's Burgeria</h2>
-                        <p class="desc">Faca e entregue hamburguers perfeitos!</p>
-                    </div>
+                <div class="info">
+                    <h2>Papa's Pizzeria</h2>
+                    <p class="desc">Faca e entregue pizzas aos clientes!</p>
                 </div>
             </div>
-        </div>
 
-        <!-- ====== GAME SCREEN ====== -->
-        <div id="game-screen">
-            <div id="game-header">
-                <button id="back-btn" onclick="goBack()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                    Voltar
-                </button>
-                <span id="game-title"></span>
-            </div>
-
-            <div class="player-wrapper" id="player-wrapper">
-                <div class="player-body">
-                    <!-- Loading overlay -->
-                    <div class="loading" id="loading">Carregando jogo...</div>
-
-                    <!-- Game container (Ruffle goes here) -->
-                    <div id="game-container"></div>
+            <div class="game-card" onclick="playGame('papasburgeria.swf', 'Papa\'s Burgeria')">
+                <div class="thumb">
+                    <span class="emoji">🍔</span>
+                    <span class="play-tag">Play</span>
                 </div>
-
-                <!-- Controls bar -->
-                <div class="controls-bar">
-                    <div class="controls-left">
-                        <button class="ctrl-btn" data-tooltip="Tela cheia" onclick="toggleFullscreen()">
-                            <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-                        </button>
-                        <button class="ctrl-btn" data-tooltip="Reset" onclick="resetGame()">
-                            <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-                        </button>
-                        <button class="ctrl-btn" data-tooltip="Screenshot" onclick="takeScreenshot()">
-                            <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2"/><circle cx="12" cy="13" r="4"/></svg>
-                        </button>
-                    </div>
-
-                    <div class="controls-right">
-                        <button class="ctrl-btn" data-tooltip="Save state" onclick="saveState()">
-                            <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        </button>
-                        <button class="ctrl-btn" data-tooltip="Load save" onclick="loadState()">
-                            <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><polyline points="9 14 12 11 15 14"/></svg>
-                        </button>
-                        <div class="separator"></div>
-                        <span id="save-info" style="font-size:0.65rem; color:var(--muted); margin-right:0.3rem;"></span>
-                    </div>
+                <div class="info">
+                    <h2>Papa's Burgeria</h2>
+                    <p class="desc">Faca e entregue hamburguers perfeitos!</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast notification -->
-    <div class="toast" id="toast"></div>
+    <!-- GAME SCREEN -->
+    <div id="game-screen">
+        <div id="game-header">
+            <button id="back-btn" onclick="goBack()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                Voltar
+            </button>
+            <span id="game-title"></span>
+        </div>
 
-    <script>
-        let currentGame = null;
-        let currentSWF = null;
-        let ruffleInstance = null;
+        <div class="player-wrapper" id="player-wrapper">
+            <div class="player-body">
+                <div class="loading" id="loading">Carregando jogo...</div>
+                <div id="game-container"><!-- Ruffle injects here --></div>
+            </div>
 
-        /* -------- Game switching -------- */
+            <div class="controls-bar">
+                <div class="controls-left">
+                    <button class="ctrl-btn" data-tooltip="Tela cheia" onclick="toggleFullscreen()">
+                        <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                    </button>
+                    <button class="ctrl-btn" data-tooltip="Resetar" onclick="resetGame()">
+                        <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                    </button>
+                    <button class="ctrl-btn" data-tooltip="Screenshot" onclick="takeScreenshot()">
+                        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2"/><circle cx="12" cy="13" r="4"/></svg>
+                    </button>
+                </div>
 
-        async function playGame(swfFile, title) {
-            const selectEl = document.getElementById('select-screen');
-            const gameEl = document.getElementById('game-screen');
-            const loading = document.getElementById('loading');
+                <div class="controls-right">
+                    <button class="ctrl-btn" data-tooltip="Save state" onclick="saveState()">
+                        <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    </button>
+                    <button class="ctrl-btn" data-tooltip="Load save" onclick="loadState()">
+                        <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><polyline points="9 14 12 11 15 14"/></svg>
+                    </button>
+                    <div class="separator"></div>
+                    <span id="save-info" style="font-size:0.65rem;color:var(--muted);margin-right:0.3rem;"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-            // Show loading
-            selectEl.classList.add('fade-out');
+<div class="toast" id="toast"></div>
 
-            setTimeout(() => {
-                selectEl.style.display = 'none';
-                selectEl.classList.remove('fade-out');
-                gameEl.classList.add('active');
-                document.getElementById('game-title').textContent = title;
-                loading.classList.add('visible');
-            }, 280);
+<script>
+    let currentGame = null;
+    let currentSWF = null;
 
-            currentSWF = swfFile;
-            currentGame = title;
+    function playGame(swfFile, title) {
+        const selectEl = document.getElementById('select-screen');
+        const gameEl = document.getElementById('game-screen');
+        const loading = document.getElementById('loading');
+        const container = document.getElementById('game-container');
 
-            // Clean previous
-            const container = document.getElementById('game-container');
-            container.innerHTML = '';
+        currentSWF = swfFile;
+        currentGame = title;
+        container.innerHTML = '';
 
-            // Wait for Ruffle to be ready
-            await waitForRuffle();
+        // Show loading
+        selectEl.classList.add('fade-out');
 
-            try {
-                const response = await fetch(swfFile);
-                if (!response.ok) throw new Error('SWF not found');
-                const swfBuffer = await response.arrayBuffer();
+        setTimeout(() => {
+            selectEl.style.display = 'none';
+            selectEl.classList.remove('fade-out');
+            gameEl.classList.add('active');
+            document.getElementById('game-title').textContent = title;
 
-                // Wait for global RufflePlayer
-                let Ruffle;
-                try {
-                    Ruffle = await RufflePlayer;
-                } catch {
-                    // Fallback to global
-                    Ruffle = window.RufflePlayer;
+            // Create embed element — Ruffle auto-polyfills this
+            const embed = document.createElement('embed');
+            embed.src = swfFile;
+            embed.type = 'application/x-shockwave-flash';
+            embed.width = '100%';
+            embed.height = '100%';
+            embed.style.width = '100%';
+            embed.style.height = '100%';
+            container.appendChild(embed);
+
+            // Wait for Ruffle to load, then hide spinner
+            // Ruffle replaces the embed with a canvas, so we poll for it
+            let retries = 0;
+            const checkReady = setInterval(() => {
+                const canvas = container.querySelector('canvas');
+                if (canvas || retries > 200) {
+                    clearInterval(checkReady);
+                    loading.classList.remove('visible');
                 }
+                retries++;
+            }, 100);
 
-                if (Ruffle) {
-                    const ruffleObj = Ruffle.newest();
-                    ruffleObj.id = 'ruffle-player';
-                    ruffleObj.style.width = '100%';
-                    ruffleObj.style.height = '100%';
-                    container.appendChild(ruffleObj);
-                    ruffleInstance = ruffleObj;
-                    ruffleObj.load({ data: swfBuffer });
-                } else {
-                    throw new Error('Ruffle not available');
-                }
-            } catch (err) {
-                container.innerHTML = `
-                    <div style="color:#f7b733;padding:2rem;text-align:center;">
-                        <p style="font-size:2rem;margin-bottom:0.5rem;">⚠️</p>
-                        <p>Erro ao carregar o jogo.</p>
-                        <p style="color:#666;font-size:0.8rem;margin-top:0.5rem;">${err.message}</p>
-                    </div>`;
-            }
+            // Safety timeout: hide loading after 15s no matter what
+            setTimeout(() => { loading.classList.remove('visible'); }, 15000);
+        }, 300);
+    }
 
-            loading.classList.remove('visible');
-            updateSaveInfo();
+    function goBack() {
+        const selectEl = document.getElementById('select-screen');
+        const gameEl = document.getElementById('game-screen');
+        const container = document.getElementById('game-container');
+
+        container.innerHTML = '';
+        currentGame = null;
+        currentSWF = null;
+
+        gameEl.classList.remove('active');
+        selectEl.style.display = 'flex';
+        selectEl.style.animation = 'fadeIn 0.4s ease';
+
+        if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
         }
+    }
 
-        function goBack() {
-            const selectEl = document.getElementById('select-screen');
-            const gameEl = document.getElementById('game-screen');
+    /* -------- Controls -------- */
 
-            // Clean up
-            const container = document.getElementById('game-container');
-            container.innerHTML = '';
-            ruffleInstance = null;
-            currentGame = null;
-            currentSWF = null;
-
-            gameEl.classList.remove('active');
-            selectEl.style.display = 'flex';
-            selectEl.style.animation = 'fadeIn 0.4s ease';
-
-            // Exit fullscreen if active
-            if (document.fullscreenElement) {
-                document.exitFullscreen().catch(() => {});
-            }
+    function toggleFullscreen() {
+        const wrapper = document.getElementById('player-wrapper');
+        if (!document.fullscreenElement) {
+            (wrapper.requestFullscreen || wrapper.webkitRequestFullscreen).call(wrapper);
+            wrapper.classList.add('fullscreen-mode');
+            showToast('Tela cheia ativada');
+        } else {
+            document.exitFullscreen();
+            wrapper.classList.remove('fullscreen-mode');
         }
+    }
 
-        /* -------- Controls -------- */
+    document.addEventListener('fullscreenchange', () => {
+        const wrapper = document.getElementById('player-wrapper');
+        if (!document.fullscreenElement) wrapper.classList.remove('fullscreen-mode');
+    });
 
-        function toggleFullscreen() {
-            const wrapper = document.getElementById('player-wrapper');
-            if (!document.fullscreenElement) {
-                wrapper.requestFullscreen?.() ?? wrapper.webkitRequestFullscreen?.();
-                wrapper.classList.add('fullscreen-mode');
-                showToast('Tela cheia ativada');
-            } else {
-                document.exitFullscreen?.() ?? document.webkitExitFullscreen?.();
-                wrapper.classList.remove('fullscreen-mode');
-            }
-        }
+    function resetGame() {
+        if (!currentSWF) return;
+        const container = document.getElementById('game-container');
+        container.innerHTML = '';
+        playGame(currentSWF, currentGame);
+        showToast('Jogo reiniciado');
+    }
 
-        document.addEventListener('fullscreenchange', () => {
-            const wrapper = document.getElementById('player-wrapper');
-            if (!document.fullscreenElement) {
-                wrapper.classList.remove('fullscreen-mode');
-            }
+    function takeScreenshot() {
+        const canvas = document.querySelector('#game-container canvas');
+        if (!canvas) { showToast('Nada para capturar'); return; }
+
+        canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentGame || 'screenshot'}.png`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Screenshot salva!');
         });
+    }
 
-        function resetGame() {
-            if (!currentSWF) return;
-            const container = document.getElementById('game-container');
-            container.innerHTML = '';
-            ruffleInstance = null;
-            playGame(currentSWF, currentGame);
-            showToast('Jogo reiniciado');
-        }
+    function saveState() {
+        // Ruffle save state — export current state as snapshot
+        const canvas = document.querySelector('#game-container canvas');
+        if (!canvas) { showToast('Nenhum jogo rodando'); return; }
 
-        async function takeScreenshot() {
-            try {
-                // Try Ruffle's saveSnapshot if available
-                if (ruffleInstance && typeof ruffleInstance.saveSnapshot === 'function') {
-                    const snapshot = await ruffleInstance.saveSnapshot();
-                    const url = URL.createObjectURL(snapshot);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${currentGame || 'screenshot'}.png`;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    showToast('Screenshot salva!');
-                    return;
-                }
+        canvas.toBlob((blob) => {
+            localStorage.setItem(`save_${currentGame}_state`, blob);
+            localStorage.setItem(`save_${currentGame}_time`, new Date().toLocaleString('pt-BR'));
+            updateSaveInfo();
+            showToast('Estado salvo!');
+        });
+    }
 
-                // Fallback: try to capture the canvas
-                const canvas = document.querySelector('canvas');
-                if (canvas) {
-                    canvas.toBlob((blob) => {
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `${currentGame || 'screenshot'}.png`;
-                        a.click();
-                        URL.revokeObjectURL(url);
-                        showToast('Screenshot salva!');
-                    });
-                } else {
-                    showToast('Nao foi possivel capturar');
-                }
-            } catch (err) {
-                showToast('Erro ao tirar screenshot');
-            }
-        }
+    function loadState() {
+        if (!currentGame) { showToast('Nenhum jogo selecionado'); return; }
+        showToast('Nao ha saves compativeis para este jogo');
+    }
 
-        /* -------- Save / Load State (Ruffle-specific) -------- */
+    function updateSaveInfo() {
+        const el = document.getElementById('save-info');
+        const time = localStorage.getItem(`save_${currentGame}_time`);
+        el.textContent = time ? `save: ${time}` : '';
+    }
 
-        function saveState() {
-            if (!ruffleInstance) {
-                showToast('Nenhum jogo rodando');
-                return;
-            }
+    /* -------- Toast -------- */
 
-            try {
-                // Try Ruffle's save snapshot for the current game state
-                // Note: true save states aren't fully supported yet by Ruffle
-                if (typeof ruffleInstance.saveSnapshot === 'function') {
-                    ruffleInstance.saveSnapshot().then((blob) => {
-                        const reader = new FileReader();
-                        reader.onload = () => {
-                            try {
-                                localStorage.setItem(`save_${currentGame}`, reader.result);
-                                localStorage.setItem(`save_${currentGame}_time`, new Date().toLocaleString('pt-BR'));
-                                updateSaveInfo();
-                                showToast('Estado salvo com sucesso!');
-                            } catch (e) {
-                                showToast('Erro ao salvar: localStorage cheio');
-                            }
-                        };
-                        reader.readAsDataURL(blob);
-                    }).catch(() => {
-                        showToast('Nao foi possivel salvar o estado');
-                    });
-                    return;
-                }
-                showToast('Save state nao suportado para este jogo');
-            } catch (err) {
-                showToast('Erro ao salvar estado');
-            }
-        }
-
-        function loadState() {
-            if (!currentGame) {
-                showToast('Nenhum jogo selecionado');
-                return;
-            }
-
-            const saved = localStorage.getItem(`save_${currentGame}`);
-            if (!saved) {
-                showToast('Nenhum save encontrado');
-                return;
-            }
-
-            // Decode the snapshot and display it
-            // Note: Ruffle doesn't support loading snapshots back, so we show it
-            showToast('Nao ha jogos salvos para este jogo');
-        }
-
-        function updateSaveInfo() {
-            const el = document.getElementById('save-info');
-            const time = localStorage.getItem(`save_${currentGame}_time`);
-            el.textContent = time ? `save: ${time}` : '';
-        }
-
-        /* -------- Toast -------- */
-
-        let toastTimeout;
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('visible');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toast.classList.remove('visible');
-            }, 2200);
-        }
-
-        /* -------- Ruffle helper -------- */
-
-        function waitForRuffle(timeout = 10000) {
-            return new Promise((resolve, reject) => {
-                if (typeof RufflePlayer !== 'undefined') {
-                    resolve();
-                    return;
-                }
-                const start = Date.now();
-                const check = setInterval(() => {
-                    if (typeof RufflePlayer !== 'undefined') {
-                        clearInterval(check);
-                        resolve();
-                    } else if (Date.now() - start > timeout) {
-                        clearInterval(check);
-                        reject(new Error('Ruffle failed to load'));
-                    }
-                }, 100);
-            });
-        }
-    </script>
+    let toastTimeout;
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('visible');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => toast.classList.remove('visible'), 2200);
+    }
+</script>
 </body>
 </html>
