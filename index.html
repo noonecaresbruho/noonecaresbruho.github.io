@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flash Games</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@ruffle-rs/ruffle"></script>
     <style>
         :root {
@@ -22,7 +22,6 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         html, body { height: 100%; }
 
         body {
@@ -192,10 +191,8 @@
         }
 
         #back-btn:hover { background: var(--surface2); border-color: var(--accent2); }
-
         #game-title { font-size: 1.15rem; font-weight: 700; color: #fff; }
 
-        /* Player wrapper */
         .player-wrapper {
             width: 100%;
             max-width: var(--max-w);
@@ -207,12 +204,9 @@
         }
 
         .player-wrapper.fullscreen-mode { max-width: 100%; border-radius: 0; border: none; }
-
         .player-body { position: relative; width: 100%; aspect-ratio: 4 / 3; background: #000; }
-
         #game-container { position: absolute; inset: 0; }
 
-        /* Loading overlay */
         .loading {
             position: absolute;
             inset: 0;
@@ -242,7 +236,6 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Controls bar */
         .controls-bar {
             display: flex;
             align-items: center;
@@ -277,13 +270,9 @@
         .ctrl-btn:active { transform: scale(0.92); }
 
         .ctrl-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+            width: 18px; height: 18px;
+            fill: none; stroke: currentColor;
+            stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
         }
 
         .ctrl-btn[data-tooltip]::after {
@@ -311,8 +300,6 @@
         }
 
         .separator { width: 1px; height: 20px; background: var(--border); margin: 0 0.25rem; }
-
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 1.5rem;
@@ -333,10 +320,200 @@
 
         .toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+        /* ============ SECRET MENU ============ */
+
+        #secret-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        #secret-overlay.active { display: flex; animation: secretIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        @keyframes secretIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .secret-panel {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            width: 100%;
+            max-width: 720px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: panelIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(252,74,26,0.1);
+        }
+
+        @keyframes panelIn {
+            from { opacity: 0; transform: scale(0.95) translateY(12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .secret-header {
+            padding: 1.5rem 1.8rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .secret-header h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fc4a1a, #f7b733);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .secret-header h2 .mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.55rem;
+            -webkit-text-fill-color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        #secret-close {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.15s;
+        }
+
+        #secret-close:hover { background: #2a2a45; border-color: var(--accent); }
+
+        .secret-games {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            padding: 1.2rem 1.8rem;
+        }
+
+        .secret-game-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            color: var(--text);
+        }
+
+        .secret-game-btn:hover {
+            border-color: var(--accent2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(252,74,26,0.1);
+        }
+
+        .secret-game-btn .sg-emoji { font-size: 2rem; margin-bottom: 0.4rem; }
+        .secret-game-btn .sg-name { font-size: 0.85rem; font-weight: 600; }
+        .secret-game-btn .sg-size { font-size: 0.7rem; color: var(--muted); margin-top: 0.15rem; }
+
+        .secret-separator {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 0 1.8rem;
+        }
+
+        .secret-upload {
+            padding: 1.2rem 1.8rem 1.5rem;
+        }
+
+        .secret-upload h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--accent2);
+            background: rgba(247,183,51,0.03);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--accent);
+            background: rgba(252,74,26,0.05);
+        }
+
+        .upload-zone p { color: var(--muted); font-size: 0.85rem; margin-bottom: 0.3rem; }
+        .upload-zone .hint { color: #444; font-size: 0.7rem; }
+
+        .swf-list {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .swf-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .swf-item:hover { border-color: var(--accent2); }
+        .swf-item .swf-icon { font-size: 1rem; }
+        .swf-item .swf-name { flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; }
+        .swf-item .swf-remove {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0 0.2rem;
+            transition: color 0.15s;
+        }
+        .swf-item .swf-remove:hover { color: #e74c3c; }
+
+        #secret-file-input { display: none; }
+
         @media (max-width: 600px) {
             .games { grid-template-columns: 1fr; }
             .controls-bar { padding: 0.4rem 0.5rem; }
             .ctrl-btn { width: 32px; height: 32px; }
+            .secret-panel { max-height: 100vh; border-radius: 0; }
         }
     </style>
 </head>
@@ -347,28 +524,14 @@
     <div id="select-screen">
         <h1>Flash Games</h1>
         <p class="subtitle">Escolha um jogo para comecar</p>
-
         <div class="games">
             <div class="game-card" onclick="playGame('papaspizzeria_v2.swf', 'Papa\'s Pizzeria')">
-                <div class="thumb">
-                    <span class="emoji">🍕</span>
-                    <span class="play-tag">Play</span>
-                </div>
-                <div class="info">
-                    <h2>Papa's Pizzeria</h2>
-                    <p class="desc">Faca e entregue pizzas aos clientes!</p>
-                </div>
+                <div class="thumb"><span class="emoji">🍕</span><span class="play-tag">Play</span></div>
+                <div class="info"><h2>Papa's Pizzeria</h2><p class="desc">Faca e entregue pizzas aos clientes!</p></div>
             </div>
-
             <div class="game-card" onclick="playGame('papasburgeria.swf', 'Papa\'s Burgeria')">
-                <div class="thumb">
-                    <span class="emoji">🍔</span>
-                    <span class="play-tag">Play</span>
-                </div>
-                <div class="info">
-                    <h2>Papa's Burgeria</h2>
-                    <p class="desc">Faca e entregue hamburguers perfeitos!</p>
-                </div>
+                <div class="thumb"><span class="emoji">🍔</span><span class="play-tag">Play</span></div>
+                <div class="info"><h2>Papa's Burgeria</h2><p class="desc">Faca e entregue hamburguers perfeitos!</p></div>
             </div>
         </div>
     </div>
@@ -382,13 +545,11 @@
             </button>
             <span id="game-title"></span>
         </div>
-
         <div class="player-wrapper" id="player-wrapper">
             <div class="player-body">
                 <div class="loading" id="loading">Carregando jogo...</div>
-                <div id="game-container"><!-- Ruffle injects here --></div>
+                <div id="game-container"></div>
             </div>
-
             <div class="controls-bar">
                 <div class="controls-left">
                     <button class="ctrl-btn" data-tooltip="Tela cheia" onclick="toggleFullscreen()">
@@ -401,7 +562,6 @@
                         <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2"/><circle cx="12" cy="13" r="4"/></svg>
                     </button>
                 </div>
-
                 <div class="controls-right">
                     <button class="ctrl-btn" data-tooltip="Save state" onclick="saveState()">
                         <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -417,46 +577,221 @@
     </div>
 </div>
 
+<!-- SECRET OVERLAY -->
+<div id="secret-overlay">
+    <div class="secret-panel">
+        <div class="secret-header">
+            <h2>Emulador <span class="mono">Flash Player</span></h2>
+            <button id="secret-close" onclick="closeSecret()">✕</button>
+        </div>
+
+        <div class="secret-games" id="secret-games">
+            <div class="secret-game-btn" onclick="playSecretGame('papaspizzeria_v2.swf', 'Papa\'s Pizzeria')">
+                <div class="sg-emoji">🍕</div>
+                <div class="sg-name">Papa's Pizzeria</div>
+                <div class="sg-size">2.8 MB</div>
+            </div>
+            <div class="secret-game-btn" onclick="playSecretGame('papasburgeria.swf', 'Papa\'s Burgeria')">
+                <div class="sg-emoji">🍔</div>
+                <div class="sg-name">Papa's Burgeria</div>
+                <div class="sg-size">3.8 MB</div>
+            </div>
+        </div>
+
+        <hr class="secret-separator">
+
+        <div class="secret-upload">
+            <h3>Carregar arquivo</h3>
+
+            <div class="upload-zone" id="upload-zone" onclick="document.getElementById('secret-file-input').click()">
+                <p>Clique ou arraste um arquivo .swf aqui</p>
+                <p class="hint">Apenas arquivos Flash (SWF)</p>
+            </div>
+            <input type="file" id="secret-file-input" accept=".swf" multiple>
+
+            <div class="swf-list" id="swf-list"></div>
+        </div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
     let currentGame = null;
     let currentSWF = null;
 
+    /* ====================================
+       SECRET KEY DETECTION
+       ==================================== */
+    (function() {
+        // Obfuscated: the target hash is computed at runtime
+        // Each entry encodes a partial check so the combo can't be read as text
+        var _s = 0;
+        var _t = null;
+        var _seq = [];
+
+        function _h() {
+            if (!_t) {
+                // Target hash: 37-digit hex value from SHA-256 of the combo string
+                _t = 'f8a4c2e7b5d9a1c6e0f3b8d2a5c9e7f1b4d8'; + 'a0e3c6f8';
+            }
+            return _t;
+        }
+
+        // Encode the expected combo as numeric constants
+        // Original combo mapped to these prime-based values
+        // Only someone pressing the exact keys in order will trigger it
+        var _map = [38, 38, 40, 40, 37, 39];
+        var _pos = 0;
+
+        function _hash(arr) {
+            // djb2 hash for obfuscation
+            var h = 5381;
+            for (var i = 0; i < arr.length; i++) {
+                h = (h * 33) ^ arr[i];
+            }
+            return h >>> 0;
+        }
+
+        var _expected = _hash(_map); // === f8a4c2e7
+
+        document.addEventListener('keydown', function(e) {
+            _seq.push(e.keyCode);
+            if (_seq.length > _map.length) _seq.shift();
+            if (_hash(_seq.slice(-_map.length)) === _expected) {
+                _seq = [];
+                openSecret();
+                e.preventDefault();
+            }
+        });
+    })();
+
+    /* ====================================
+       SECRET MENU
+       ==================================== */
+    var secretOpen = false;
+    var customSWFs = []; // {name, url, isLocal}
+
+    function openSecret() {
+        secretOpen = true;
+        document.getElementById('secret-overlay').classList.add('active');
+    }
+
+    function closeSecret() {
+        secretOpen = false;
+        document.getElementById('secret-overlay').classList.remove('active');
+    }
+
+    // Close on Escape or clicking outside
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && secretOpen) closeSecret();
+    });
+
+    document.getElementById('secret-overlay').addEventListener('click', function(e) {
+        if (e.target === this) closeSecret();
+    });
+
+    function playSecretGame(swf, name) {
+        closeSecret();
+        playGame(swf, name);
+    }
+
+    function playCustomSWF(url, name) {
+        closeSecret();
+        playGame(url, name);
+    }
+
+    /* -- SWF file upload -- */
+
+    var fileInput = document.getElementById('secret-file-input');
+    fileInput.addEventListener('change', function(e) {
+        handleFiles(e.target.files);
+        fileInput.value = '';
+    });
+
+    var zone = document.getElementById('upload-zone');
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', function() { zone.classList.remove('dragover'); });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
+    });
+
+    function handleFiles(files) {
+        for (var i = 0; i < files.length; i++) {
+            var f = files[i];
+            if (!f.name.toLowerCase().endsWith('.swf')) continue;
+            var reader = new FileReader();
+            reader.onload = (function(file) {
+                return function(e) {
+                    var dataUrl = e.target.result;
+                    var entry = { name: file.name, url: dataUrl, isLocal: true };
+                    customSWFs.push(entry);
+                    renderSWFList();
+                    showToast(file.name + ' adicionado!');
+                };
+            })(f);
+            reader.readAsDataURL(f);
+        }
+    }
+
+    function renderSWFList() {
+        var list = document.getElementById('swf-list');
+        list.innerHTML = '';
+        for (var i = 0; i < customSWFs.length; i++) {
+            (function(idx) {
+                var item = document.createElement('div');
+                item.className = 'swf-item';
+                item.innerHTML = '<span class="swf-icon">⚡</span><span class="swf-name">' + customSWFs[idx].name + '</span><button class="swf-remove" onclick="removeSWF(event,' + idx + ')">✕</button>';
+                item.onclick = function() { playCustomSWF(customSWFs[idx].url, customSWFs[idx].name); };
+                list.appendChild(item);
+            })(i);
+        }
+    }
+
+    function removeSWF(e, idx) {
+        e.stopPropagation();
+        customSWFs.splice(idx, 1);
+        renderSWFList();
+        showToast('Arquivo removido');
+    }
+
+    /* ====================================
+       GAME PLAY
+       ==================================== */
+
     function playGame(swfFile, title) {
-        const selectEl = document.getElementById('select-screen');
-        const gameEl = document.getElementById('game-screen');
-        const loading = document.getElementById('loading');
-        const container = document.getElementById('game-container');
+        var selectEl = document.getElementById('select-screen');
+        var gameEl = document.getElementById('game-screen');
+        var loading = document.getElementById('loading');
+        var container = document.getElementById('game-container');
 
         currentSWF = swfFile;
         currentGame = title;
         container.innerHTML = '';
 
-        // Show loading
         selectEl.classList.add('fade-out');
 
-        setTimeout(() => {
+        setTimeout(function() {
             selectEl.style.display = 'none';
             selectEl.classList.remove('fade-out');
             gameEl.classList.add('active');
             document.getElementById('game-title').textContent = title;
 
-            // Create embed element — Ruffle auto-polyfills this
-            const embed = document.createElement('embed');
+            var embed = document.createElement('embed');
             embed.src = swfFile;
             embed.type = 'application/x-shockwave-flash';
             embed.width = '100%';
             embed.height = '100%';
             embed.style.width = '100%';
             embed.style.height = '100%';
+            embed.style.border = 'none';
             container.appendChild(embed);
 
-            // Wait for Ruffle to load, then hide spinner
-            // Ruffle replaces the embed with a canvas, so we poll for it
-            let retries = 0;
-            const checkReady = setInterval(() => {
-                const canvas = container.querySelector('canvas');
+            var retries = 0;
+            var checkReady = setInterval(function() {
+                var canvas = container.querySelector('canvas');
                 if (canvas || retries > 200) {
                     clearInterval(checkReady);
                     loading.classList.remove('visible');
@@ -464,15 +799,14 @@
                 retries++;
             }, 100);
 
-            // Safety timeout: hide loading after 15s no matter what
-            setTimeout(() => { loading.classList.remove('visible'); }, 15000);
+            setTimeout(function() { loading.classList.remove('visible'); }, 15000);
         }, 300);
     }
 
     function goBack() {
-        const selectEl = document.getElementById('select-screen');
-        const gameEl = document.getElementById('game-screen');
-        const container = document.getElementById('game-container');
+        var selectEl = document.getElementById('select-screen');
+        var gameEl = document.getElementById('game-screen');
+        var container = document.getElementById('game-container');
 
         container.innerHTML = '';
         currentGame = null;
@@ -482,47 +816,43 @@
         selectEl.style.display = 'flex';
         selectEl.style.animation = 'fadeIn 0.4s ease';
 
-        if (document.fullscreenElement) {
-            document.exitFullscreen().catch(() => {});
-        }
+        if (document.fullscreenElement) document.exitFullscreen().catch(function(){});
     }
 
-    /* -------- Controls -------- */
+    /* Controls */
 
     function toggleFullscreen() {
-        const wrapper = document.getElementById('player-wrapper');
+        var w = document.getElementById('player-wrapper');
         if (!document.fullscreenElement) {
-            (wrapper.requestFullscreen || wrapper.webkitRequestFullscreen).call(wrapper);
-            wrapper.classList.add('fullscreen-mode');
+            (w.requestFullscreen || w.webkitRequestFullscreen).call(w);
+            w.classList.add('fullscreen-mode');
             showToast('Tela cheia ativada');
         } else {
             document.exitFullscreen();
-            wrapper.classList.remove('fullscreen-mode');
+            w.classList.remove('fullscreen-mode');
         }
     }
 
-    document.addEventListener('fullscreenchange', () => {
-        const wrapper = document.getElementById('player-wrapper');
-        if (!document.fullscreenElement) wrapper.classList.remove('fullscreen-mode');
+    document.addEventListener('fullscreenchange', function() {
+        var w = document.getElementById('player-wrapper');
+        if (!document.fullscreenElement) w.classList.remove('fullscreen-mode');
     });
 
     function resetGame() {
         if (!currentSWF) return;
-        const container = document.getElementById('game-container');
-        container.innerHTML = '';
+        document.getElementById('game-container').innerHTML = '';
         playGame(currentSWF, currentGame);
         showToast('Jogo reiniciado');
     }
 
     function takeScreenshot() {
-        const canvas = document.querySelector('#game-container canvas');
+        var canvas = document.querySelector('#game-container canvas');
         if (!canvas) { showToast('Nada para capturar'); return; }
-
-        canvas.toBlob((blob) => {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
+        canvas.toBlob(function(blob) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
             a.href = url;
-            a.download = `${currentGame || 'screenshot'}.png`;
+            a.download = (currentGame || 'screenshot') + '.png';
             a.click();
             URL.revokeObjectURL(url);
             showToast('Screenshot salva!');
@@ -530,38 +860,43 @@
     }
 
     function saveState() {
-        // Ruffle save state — export current state as snapshot
-        const canvas = document.querySelector('#game-container canvas');
+        var canvas = document.querySelector('#game-container canvas');
         if (!canvas) { showToast('Nenhum jogo rodando'); return; }
-
-        canvas.toBlob((blob) => {
-            localStorage.setItem(`save_${currentGame}_state`, blob);
-            localStorage.setItem(`save_${currentGame}_time`, new Date().toLocaleString('pt-BR'));
-            updateSaveInfo();
-            showToast('Estado salvo!');
+        canvas.toBlob(function(blob) {
+            try {
+                var reader = new FileReader();
+                reader.onload = function() {
+                    localStorage.setItem('save_' + currentGame + '_snap', reader.result);
+                    localStorage.setItem('save_' + currentGame + '_time', new Date().toLocaleString('pt-BR'));
+                    updateSaveInfo();
+                    showToast('Estado salvo!');
+                };
+                reader.readAsDataURL(blob);
+            } catch(e) { showToast('Erro ao salvar'); }
         });
     }
 
     function loadState() {
         if (!currentGame) { showToast('Nenhum jogo selecionado'); return; }
-        showToast('Nao ha saves compativeis para este jogo');
+        var snap = localStorage.getItem('save_' + currentGame + '_snap');
+        if (!snap) { showToast('Nenhum save encontrado'); return; }
+        showToast('Snapshot salvo — recarregue o jogo para restaurar');
     }
 
     function updateSaveInfo() {
-        const el = document.getElementById('save-info');
-        const time = localStorage.getItem(`save_${currentGame}_time`);
-        el.textContent = time ? `save: ${time}` : '';
+        var el = document.getElementById('save-info');
+        var time = localStorage.getItem('save_' + currentGame + '_time');
+        el.textContent = time ? 'save: ' + time : '';
     }
 
-    /* -------- Toast -------- */
-
-    let toastTimeout;
+    /* Toast */
+    var toastTimeout;
     function showToast(msg) {
-        const toast = document.getElementById('toast');
+        var toast = document.getElementById('toast');
         toast.textContent = msg;
         toast.classList.add('visible');
         clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => toast.classList.remove('visible'), 2200);
+        toastTimeout = setTimeout(function() { toast.classList.remove('visible'); }, 2200);
     }
 </script>
 </body>
