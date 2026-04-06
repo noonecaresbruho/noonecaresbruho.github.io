@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash Games</title>
+    <script src="https://cdn.jsdelivr.net/npm/@ruffle-rs/ruffle"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0f0f1a;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* --- Selection screen --- */
+        #select-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        #select-screen h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fc4a1a, #f7b733);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #select-screen p {
+            color: #888;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .games {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .game-card {
+            width: 260px;
+            background: #1a1a2e;
+            border: 1px solid #2a2a4a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-4px);
+            border-color: #f7b733;
+            box-shadow: 0 8px 30px rgba(247, 183, 51, 0.15);
+        }
+
+        .game-card .icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fc4a1a, #f7b733);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .game-card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .game-card p {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 0;
+        }
+
+        /* --- Game screen --- */
+        #game-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        #game-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 860px;
+        }
+
+        #back-btn {
+            background: #1a1a2e;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        #back-btn:hover { border-color: #f7b733; }
+
+        #game-title {
+            font-size: 1.3rem;
+            color: #fff;
+        }
+
+        #game-container {
+            width: 100%;
+            max-width: 860px;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #2a2a4a;
+            flex: 1;
+            min-height: 520px;
+        }
+
+        #game-container:empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        /* --- Loading spinner --- */
+        .loading {
+            display: none;
+            color: #f7b733;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading.visible { display: block; }
+
+        .loading::before {
+            content: '';
+            display: block;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #f7b733;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 0.5rem;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- Game selection screen -->
+    <div id="select-screen">
+        <h1>Flash Games</h1>
+        <p>Escolha um jogo para comecar</p>
+
+        <div class="games">
+            <div class="game-card" onclick="playGame('papaspizzeria_v2.swf', 'Papa\'s Pizzeria')">
+                <div class="icon">🍕</div>
+                <h2>Papa's Pizzeria</h2>
+                <p>Faca e entregue pizzas!</p>
+            </div>
+
+            <div class="game-card" onclick="playGame('papasburgeria.swf', 'Papa\'s Burgeria')">
+                <div class="icon">🍔</div>
+                <h2>Papa's Burgeria</h2>
+                <p>Faca e entregue hamburguers!</p>
+            </div>
+        </div>
+
+        <p class="loading" id="loading">Carregando jogo...</p>
+    </div>
+
+    <!-- Game play screen -->
+    <div id="game-screen">
+        <div id="game-header">
+            <button id="back-btn" onclick="goBack()">&larr; Voltar</button>
+            <span id="game-title"></span>
+        </div>
+        <div id="game-container"></div>
+    </div>
+
+    <script>
+        function playGame(swfFile, title) {
+            // Show loading
+            const loading = document.getElementById('loading');
+            loading.classList.add('visible');
+
+            // Hide select, show game
+            document.getElementById('select-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'flex';
+            document.getElementById('game-title').textContent = title;
+
+            // Load the game
+            const container = document.getElementById('game-container');
+            container.innerHTML = `
+                <embed
+                    src="${encodeURIComponent(swfFile)}"
+                    width="860"
+                    height="520"
+                    type="application/x-shockwave-flash"
+                />
+            `;
+
+            loading.classList.remove('visible');
+        }
+
+        function goBack() {
+            document.getElementById('game-container').innerHTML = '';
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('select-screen').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
