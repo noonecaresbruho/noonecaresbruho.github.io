@@ -202,15 +202,19 @@
   function handleDrop(e){ e.preventDefault(); document.getElementById('drop-zone').classList.remove('over'); var f=e.dataTransfer.files[0]; if(f&&f.name.endsWith('.swf'))loadSWF(f); }
   function loadSWF(f) {
     if (!f) return;
-    var wrap = document.getElementById('ruffle-wrap');
-    wrap.innerHTML = '';
-    wrap.style.display = 'block';
-    var ruffle = window.RufflePlayer.newest();
-    var player = ruffle.createPlayer();
-    wrap.appendChild(player);
-    player.style.width = '100%';
-    player.style.height = '100%';
-    player.load({ url: URL.createObjectURL(f), parameters: '' });
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var wrap = document.getElementById('ruffle-wrap');
+      wrap.innerHTML = '';
+      wrap.style.display = 'block';
+      var ruffle = window.RufflePlayer.newest();
+      var player = ruffle.createPlayer();
+      wrap.appendChild(player);
+      player.style.width = '100%';
+      player.style.height = '100%';
+      player.load({ data: e.target.result });
+    };
+    reader.readAsArrayBuffer(f);
     var n = document.getElementById('loaded-name');
     n.style.display = 'block';
     n.textContent = '▶ ' + f.name;
