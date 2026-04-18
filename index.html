@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Papa's Game Room</title>
+  <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -68,7 +69,8 @@
     #drop-zone strong{color:#888;}
     #file-input{display:none;}
     #loaded-name{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--yellow);display:none;margin-bottom:8px;letter-spacing:1px;}
-    #swf-frame{width:100%;height:320px;border:none;display:none;}
+    #ruffle-wrap{width:100%;aspect-ratio:4/3;background:#000;display:none;margin-top:1rem;}
+    #ruffle-wrap ruffle-player{width:100%;height:100%;display:block;}
 
     @media(max-width:520px){
       .header-right{display:none;}
@@ -129,7 +131,7 @@
       <p><strong>clica aqui</strong> ou arrasta um arquivo<br>.swf para carregar</p>
     </div>
     <div id="loaded-name"></div>
-    <iframe id="swf-frame" allowfullscreen></iframe>
+    <div id="ruffle-wrap"></div>
   </div>
 </div>
 
@@ -198,7 +200,21 @@
   function closeSecret(){ document.getElementById('secret-overlay').classList.remove('on'); document.body.style.overflow=''; }
   function handleDragOver(e){ e.preventDefault(); document.getElementById('drop-zone').classList.add('over'); }
   function handleDrop(e){ e.preventDefault(); document.getElementById('drop-zone').classList.remove('over'); var f=e.dataTransfer.files[0]; if(f&&f.name.endsWith('.swf'))loadSWF(f); }
-  function loadSWF(f){ if(!f)return; var fr=document.getElementById('swf-frame'); fr.src=URL.createObjectURL(f); fr.style.display='block'; var n=document.getElementById('loaded-name'); n.style.display='block'; n.textContent='▶ '+f.name; }
+  function loadSWF(f) {
+    if (!f) return;
+    var wrap = document.getElementById('ruffle-wrap');
+    wrap.innerHTML = '';
+    wrap.style.display = 'block';
+    var ruffle = window.RufflePlayer.newest();
+    var player = ruffle.createPlayer();
+    wrap.appendChild(player);
+    player.style.width = '100%';
+    player.style.height = '100%';
+    player.load({ url: URL.createObjectURL(f), parameters: '' });
+    var n = document.getElementById('loaded-name');
+    n.style.display = 'block';
+    n.textContent = '▶ ' + f.name;
+  }
   document.addEventListener('keydown', function(e){ if(e.key==='Escape')closeSecret(); });
 </script>
 </body>
